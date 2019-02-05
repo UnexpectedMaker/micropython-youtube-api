@@ -42,28 +42,31 @@ class YoutubeApi:
 
     config = {}
     coonnections = 0
-    has_internet = False
 
     update_stats_time = time.time() - 10
 
     cached_subs = 0
     cached_views = 0
 
-    def __init__(self):
+    def __init__(self, conn, conf ):
 
         if YoutubeApi.coonnections == 0:
             # Read config
-            with open('config.json') as f:
-                YoutubeApi.config = json.load(f)
+            # with open('config.json') as f:
+            #     YoutubeApi.config = json.load(f)
 
             # set connections to 1 so we can have any more instances
             YoutubeApi.coonnections == 1
-            YoutubeApi.has_internet = False
+            YoutubeApi.config =  conf
+            YoutubeApi.conn = conn
 
         else:
             print("You don't need more than one instance...")
 
-    def __exit__(self):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
         self.shutdown()
 
     def update_stats(self):
@@ -74,19 +77,7 @@ class YoutubeApi:
     @classmethod
     def grab_stats(cls):
 
-            if not cls.has_internet:
-
-                cls.wlan = network.WLAN(network.STA_IF)
-                cls.wlan.active(True)
-
-                if not cls.wlan.isconnected():
-                
-                    cls.wlan.connect( cls.config['ssid'], cls.config['ssid_password'])
-                    while not cls.wlan.isconnected():
-                        pass
-
-                    cls.has_internet = True
-
+        if YoutubeApi.conn.isconnected:
             command = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id="+ cls.config['channelid'] + "&key=" + cls.config['appid']
             #print ( command )
             print ("Contacting GoogleAPI...")
@@ -102,6 +93,8 @@ class YoutubeApi:
 
             else:
                 print( "ERROR: status_code: " + str(req.status_code) )
+        else:
+            print( "ERROR: No network connection!")
 
     @property
     def subs(self):
@@ -114,7 +107,7 @@ class YoutubeApi:
         return YoutubeApi.cached_views
 
     def shutdown(self):
-        if YoutubeApi.wlan.isconnected():
-            YoutubeApi.wlan.active(False)
+        if YoutubeApi.conn.isconnected():
+            YoutubeApi.conn.active(False)
             print("Wifi Disconnected!")
 
