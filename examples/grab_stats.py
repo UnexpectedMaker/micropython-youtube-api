@@ -5,10 +5,11 @@ import network, json, time
 with open('config.json') as f:
     config = json.load(f)
 
-# Connect to wifi
+# Create WiFi connection and turn it on
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 
+# Connect to WiFi router
 print ("Contacting to WiFi: {}".format( config['ssid'] ) )
 wlan.connect( config['ssid'], config['ssid_password'])
 

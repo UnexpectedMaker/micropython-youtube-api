@@ -54,16 +54,23 @@ class YoutubeAPI:
             YoutubeAPI.config = conf
             YoutubeAPI.conn = conn
 
+            # Create the command string to send to GoogleAPI
             YoutubeAPI.command = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id={}&key={}".format( YoutubeAPI.config['channelid'], YoutubeAPI.config['appid'] )
 
         else:
             print("You don't need more than one instance...")
 
+    # Enter and Exit methods for context manager to be able to shut down the Wifi when finished
     def __enter__(self):
         return self
 
     def __exit__(self, *args):
         self.shutdown()
+
+    # Shutdown wifi if exiting class instance
+    def shutdown(self):
+        if YoutubeAPI.conn.isconnected():
+            YoutubeAPI.conn.active(False)
 
     # Update the stats is the correct time interval has passed
     def update_stats(self):
@@ -99,6 +106,7 @@ class YoutubeAPI:
         else:
             print( "ERROR: No network connection!")
 
+    # Accessorss for each of the stats returned by the API
     @property
     def subs(self):
         self.update_stats()
@@ -118,9 +126,4 @@ class YoutubeAPI:
     def comments(self):
         self.update_stats()
         return YoutubeAPI.cached_comments
-
-    # Shutdown wifi if exiting class instance
-    def shutdown(self):
-        if YoutubeAPI.conn.isconnected():
-            YoutubeAPI.conn.active(False)
 
