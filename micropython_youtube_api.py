@@ -42,9 +42,9 @@ class YoutubeApi:
 
     config = {}
     coonnections = 0
-    running = False
-    update_interval = 0
     has_internet = False
+
+    update_stats_time = time.time() - 10
 
     subs = 0
     views = 0
@@ -56,56 +56,59 @@ class YoutubeApi:
             with open('config.json') as f:
                 YoutubeApi.config = json.load(f)
 
-            #store update interval 
-            YoutubeApi.update_interval = YoutubeApi.config['query_interval_sec']
-
             # set connections to 1 so we can have any more instances
             YoutubeApi.coonnections == 1
             YoutubeApi.has_internet = False
+
         else:
             print("You don't need more than one instance...")
 
-    def grabStats(self):
+    def update_stats(self):
+        if YoutubeApi.update_stats_time < time.time():
+            YoutubeApi.grab_stats()
+            YoutubeApi.update_stats_time = time.time() + YoutubeApi.config['query_interval_sec']
 
-        if not YoutubeApi.running:
+    @classmethod
+    def grab_stats(cls):
 
-            if not YoutubeApi.has_internet:
+            if not cls.has_internet:
 
-                YoutubeApi.wlan = network.WLAN(network.STA_IF)
-                YoutubeApi.wlan.active(True)
+                cls.wlan = network.WLAN(network.STA_IF)
+                cls.wlan.active(True)
 
-                if not YoutubeApi.wlan.isconnected():
+                if not cls.wlan.isconnected():
                 
-                    print('connecting to network...')
-
-                    YoutubeApi.wlan.connect(config['ssid'], config['ssid_password'])
-                    while not YoutubeApi.wlan.isconnected():
+                    cls.wlan.connect(config['ssid'], config['ssid_password'])
+                    while not cls.wlan.isconnected():
                         pass
-                    print("Connected!")
-                    YoutubeApi.has_internet = True
 
-            YoutubeApi.running = True
+                    cls.has_internet = True
 
-            command = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id="+ YoutubeApi.config['channelid'] + "&key=" + YoutubeApi.config['appid']
+            command = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id="+ cls.config['channelid'] + "&key=" + cls.config['appid']
             #print ( command )
             print ("Contacting GoogleAPI...")
 
             req = ureq.get( command )
             
             if req.status_code == 200:
-                YoutubeApi.stats = [{'subs': stat['statistics']['subscriberCount'], 'views': stat['statistics']['viewCount']} for stat in req.json()['items']]
+                cls.stats = [{'subs': stat['statistics']['subscriberCount'], 'views': stat['statistics']['viewCount']} for stat in req.json()['items']]
                 
                 # for stat in YoutubeApi.stats
-                YoutubeApi.subs = YoutubeApi.stats[0]['subs']
-                YoutubeApi.views = YoutubeApi.stats[0]['views']
+                cls.subs = cls.stats[0]['subs']
+                cls.views = cls.stats[0]['views']
 
             else:
                 print( "ERROR: status_code: " + str(req.status_code) )
 
-            # print ("Sleeping for " + str( YoutubeApi.config['query_interval_sec'] ) + "secs")
-            # # time.sleep( YoutubeApi.config['query_interval_sec'] )
+    @property
+    def subs(self):
+        self.update_stats()
+        return YoutubeApi.subs
 
-            YoutubeApi.running = False
+    @property
+    def views(self):
+        self.update_stats()
+        return YoutubeApi.views
 
     def __exit__(self):
         YoutubeApi.running = False
