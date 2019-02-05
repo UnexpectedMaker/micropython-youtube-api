@@ -47,17 +47,16 @@ class YoutubeApi:
 
     cached_subs = 0
     cached_views = 0
+    cached_comments = 0
+    cached_videos = 0
 
     def __init__(self, conn, conf ):
 
         if YoutubeApi.coonnections == 0:
-            # Read config
-            # with open('config.json') as f:
-            #     YoutubeApi.config = json.load(f)
-
             # set connections to 1 so we can have any more instances
             YoutubeApi.coonnections == 1
-            YoutubeApi.config =  conf
+            
+            YoutubeApi.config = conf
             YoutubeApi.conn = conn
 
         else:
@@ -85,11 +84,18 @@ class YoutubeApi:
             req = ureq.get( command )
             
             if req.status_code == 200:
-                cls.stats = [{'subs': stat['statistics']['subscriberCount'], 'views': stat['statistics']['viewCount']} for stat in req.json()['items']]
+                cls.stats = [{
+                    'subs': stat['statistics']['subscriberCount'], 
+                    'views': stat['statistics']['viewCount'],
+                    'videos': stat['statistics']['videoCount'],
+                    'comments': stat['statistics']['commentCount']
+                    } for stat in req.json()['items']]
                 
                 # for stat in YoutubeApi.stats
                 cls.cached_subs = cls.stats[0]['subs']
                 cls.cached_views = cls.stats[0]['views']
+                cls.cached_videos = cls.stats[0]['videos']
+                cls.comments = cls.stats[0]['comments']
 
             else:
                 print( "ERROR: status_code: " + str(req.status_code) )
@@ -105,6 +111,16 @@ class YoutubeApi:
     def views(self):
         self.update_stats()
         return YoutubeApi.cached_views
+
+    @property
+    def videos(self):
+        self.update_stats()
+        return YoutubeApi.cached_videos
+
+    @property
+    def comments(self):
+        self.update_stats()
+        return YoutubeApi.cached_comments
 
     def shutdown(self):
         if YoutubeApi.conn.isconnected():
