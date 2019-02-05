@@ -8,6 +8,8 @@ with open('config.json') as f:
 # Connect to wifi
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
+
+print ("Contacting to WiFi: {}".format( config['ssid'] ) )
 wlan.connect( config['ssid'], config['ssid_password'])
 
 # Wait until wifi is connected

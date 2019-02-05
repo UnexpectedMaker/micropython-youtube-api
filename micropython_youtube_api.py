@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2019 Seon "Unexpected maker" Rozenblum
+# Copyright (c) 2019 Seon "Unexpected Maker" Rozenblum
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -38,9 +38,9 @@ import network, json, time
 class YoutubeAPI:
 
     coonnections = 0
-
     update_stats_time = time.time() - 10
 
+    # cached stat data
     cached_subs = 0
     cached_views = 0
     cached_comments = 0
@@ -51,9 +51,10 @@ class YoutubeAPI:
         if YoutubeAPI.coonnections == 0:
             # set connections to 1 so we can have any more instances
             YoutubeAPI.coonnections == 1
-
             YoutubeAPI.config = conf
             YoutubeAPI.conn = conn
+
+            YoutubeAPI.command = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id={}&key={}".format( YoutubeAPI.config['channelid'], YoutubeAPI.config['appid'] )
 
         else:
             print("You don't need more than one instance...")
@@ -64,6 +65,7 @@ class YoutubeAPI:
     def __exit__(self, *args):
         self.shutdown()
 
+    # Update the stats is the correct time interval has passed
     def update_stats(self):
         if YoutubeAPI.update_stats_time < time.time():
             YoutubeAPI.grab_stats()
@@ -73,12 +75,11 @@ class YoutubeAPI:
     def grab_stats(cls):
 
         if YoutubeAPI.conn.isconnected:
-            command = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id="+ cls.config['channelid'] + "&key=" + cls.config['appid']
-            #print ( command )
-            print ("Contacting GoogleAPI...")
 
-            req = ureq.get( command )
-            
+            print ("Contacting GoogleAPI... " )
+
+            # request the data from Google
+            req = ureq.get( YoutubeAPI.command )
             if req.status_code == 200:
                 cls.stats = [{
                     'subs': stat['statistics']['subscriberCount'], 
