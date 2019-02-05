@@ -46,8 +46,8 @@ class YoutubeApi:
 
     update_stats_time = time.time() - 10
 
-    subs = 0
-    views = 0
+    cached_subs = 0
+    cached_views = 0
 
     def __init__(self):
 
@@ -62,6 +62,9 @@ class YoutubeApi:
 
         else:
             print("You don't need more than one instance...")
+
+    def __exit__(self):
+        self.shutdown()
 
     def update_stats(self):
         if YoutubeApi.update_stats_time < time.time():
@@ -78,7 +81,7 @@ class YoutubeApi:
 
                 if not cls.wlan.isconnected():
                 
-                    cls.wlan.connect(config['ssid'], config['ssid_password'])
+                    cls.wlan.connect( cls.config['ssid'], cls.config['ssid_password'])
                     while not cls.wlan.isconnected():
                         pass
 
@@ -94,8 +97,8 @@ class YoutubeApi:
                 cls.stats = [{'subs': stat['statistics']['subscriberCount'], 'views': stat['statistics']['viewCount']} for stat in req.json()['items']]
                 
                 # for stat in YoutubeApi.stats
-                cls.subs = cls.stats[0]['subs']
-                cls.views = cls.stats[0]['views']
+                cls.cached_subs = cls.stats[0]['subs']
+                cls.cached_views = cls.stats[0]['views']
 
             else:
                 print( "ERROR: status_code: " + str(req.status_code) )
@@ -103,13 +106,15 @@ class YoutubeApi:
     @property
     def subs(self):
         self.update_stats()
-        return YoutubeApi.subs
+        return YoutubeApi.cached_subs
 
     @property
     def views(self):
         self.update_stats()
-        return YoutubeApi.views
+        return YoutubeApi.cached_views
 
-    def __exit__(self):
-        YoutubeApi.running = False
-        wlan.active(False)
+    def shutdown(self):
+        if YoutubeApi.wlan.isconnected():
+            YoutubeApi.wlan.active(False)
+            print("Wifi Disconnected!")
+
