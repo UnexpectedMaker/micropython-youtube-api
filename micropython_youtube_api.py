@@ -1,9 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016 Damien P. George (original Neopixel object)
-# Copyright (c) 2017 Ladyada
-# Copyright (c) 2017 Scott Shawcroft for Adafruit Industries
-# Copyright (c) 2019 Matt Trentini (porting back to MicroPython)
+# Copyright (c) 2019 Seon "Unexpected maker" Rozenblum
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,20 +24,19 @@
 `micropython_youtube_api` - YouTube API 
 ====================================================
 
+See examples folder for how to use
+
 * Author(s): Seon Rozenblum
 """
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/unexpectedmaker/micropython-youtube-api"
 
-import network
 import urequests as ureq
-import json
-import time
+import network, json, time
 
-class YoutubeApi:
+class YoutubeAPI:
 
-    config = {}
     coonnections = 0
 
     update_stats_time = time.time() - 10
@@ -52,12 +48,12 @@ class YoutubeApi:
 
     def __init__(self, conn, conf ):
 
-        if YoutubeApi.coonnections == 0:
+        if YoutubeAPI.coonnections == 0:
             # set connections to 1 so we can have any more instances
-            YoutubeApi.coonnections == 1
-            
-            YoutubeApi.config = conf
-            YoutubeApi.conn = conn
+            YoutubeAPI.coonnections == 1
+
+            YoutubeAPI.config = conf
+            YoutubeAPI.conn = conn
 
         else:
             print("You don't need more than one instance...")
@@ -69,14 +65,14 @@ class YoutubeApi:
         self.shutdown()
 
     def update_stats(self):
-        if YoutubeApi.update_stats_time < time.time():
-            YoutubeApi.grab_stats()
-            YoutubeApi.update_stats_time = time.time() + YoutubeApi.config['query_interval_sec']
+        if YoutubeAPI.update_stats_time < time.time():
+            YoutubeAPI.grab_stats()
+            YoutubeAPI.update_stats_time = time.time() + YoutubeAPI.config['query_interval_sec']
 
     @classmethod
     def grab_stats(cls):
 
-        if YoutubeApi.conn.isconnected:
+        if YoutubeAPI.conn.isconnected:
             command = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id="+ cls.config['channelid'] + "&key=" + cls.config['appid']
             #print ( command )
             print ("Contacting GoogleAPI...")
@@ -105,25 +101,25 @@ class YoutubeApi:
     @property
     def subs(self):
         self.update_stats()
-        return YoutubeApi.cached_subs
+        return YoutubeAPI.cached_subs
 
     @property
     def views(self):
         self.update_stats()
-        return YoutubeApi.cached_views
+        return YoutubeAPI.cached_views
 
     @property
     def videos(self):
         self.update_stats()
-        return YoutubeApi.cached_videos
+        return YoutubeAPI.cached_videos
 
     @property
     def comments(self):
         self.update_stats()
-        return YoutubeApi.cached_comments
+        return YoutubeAPI.cached_comments
 
+    # Shutdown wifi if exiting class instance
     def shutdown(self):
-        if YoutubeApi.conn.isconnected():
-            YoutubeApi.conn.active(False)
-            print("Wifi Disconnected!")
+        if YoutubeAPI.conn.isconnected():
+            YoutubeAPI.conn.active(False)
 

@@ -1,4 +1,4 @@
-from micropython_youtube_api import YoutubeApi
+from micropython_youtube_api import YoutubeAPI
 import network, json, time
 
 # Read config
@@ -15,13 +15,12 @@ while not wlan.isconnected:
     pass
 
 # Create an instance of the YoutubeApi
-with YoutubeApi( wlan, config ) as data:
+with YoutubeAPI( wlan, config ) as data:
 
     # Read the data every X seconds
     update_interval = 10
 
     while True:
-
         print ("Subs {}".format( data.subs ) )
         print ("Views {}".format( data.views ) )
         print ("Videos {}".format( data.videos ) )
