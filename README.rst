@@ -86,7 +86,11 @@ I love making and designing projects but sharing open source projects takes a lo
 
 If you find this project useful or want to see more open source projects like it, please consider backing me on Patreon to say thanks!
 
-[![patreon](http://3sprockets.com.au/um/PatreonSmall.jpg)](https://www.patreon.com/unexpectedmaker)
+.. image:: http://3sprockets.com.au/um/PatreonSmall.jpg
+    :width: 100
+    :alt: Patreon
+    
+(https://www.patreon.com/unexpectedmaker)
 
 Unexpected Maker
 ===================
