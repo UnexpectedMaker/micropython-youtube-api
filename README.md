@@ -19,6 +19,12 @@ Download the repositry and copy the following files to your ESP8266 or ESP32 Dev
 * urequests.py
 * Optional: grab_stats.py from examples folder
 
+## Using the API
+
+Check the grab_stats.py example script for a full implementation of using the library.
+
+Take note that the creation of the YoutubeAPI() instance is done using the **with** statement to create a context around the definition, so cleanup of the WiFi connection can happen when the data variable (class instance) is out of scope. 
+
 
 ## Getting a Google Apps API key (Required!)
 
