@@ -11,6 +11,18 @@ The config.json file contains entried you will need to fill in for the following
 * ssid_password - Your WiFi router password
 * appkeyid - Your API kety from Google (See below on how to opbtain one)
 * channelid - Your YouTube Channel ID
+* query_interval_sec - How long between hitting GoogleApps for an updated set of data
+
+.. code-block:: json
+
+{
+    "ssid": "Enter_Wifi_SSID",
+    "ssid_password": "Enter_Wifi_Password",
+    "appkeyid": "Enter_GooleApps_API_Key",
+    "channelid": "Enter_YT_Channel_ID",
+    "query_interval_sec": 60
+}
+..
 
 
 Installing

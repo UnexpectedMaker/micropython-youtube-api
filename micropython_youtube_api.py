@@ -72,6 +72,7 @@ class YoutubeAPI:
     # Shutdown wifi if exiting class instance
     def shutdown(self):
         if YoutubeAPI.conn.isconnected():
+            print( 'Shutting down WiFi..' )
             YoutubeAPI.conn.active(False)
 
     # Update the stats is the correct time interval has passed

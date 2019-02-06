@@ -5,6 +5,10 @@ import network, json, time
 with open('config.json') as f:
     config = json.load(f)
 
+# Check config.json has updated credentials
+if not config['ssid'] == 'Enter_Wifi_SSID':
+    assert False, ("config.json has not been updated with your unique keys and data")
+
 # Create WiFi connection and turn it on
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)

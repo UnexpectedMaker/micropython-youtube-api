@@ -51,7 +51,11 @@ def request(method, url, data=None, json=None, headers={}, stream=None):
         port = int(port)
 
     ai = usocket.getaddrinfo(host, port, 0, usocket.SOCK_STREAM)
-    ai = ai[0]
+
+    try:
+        ai = ai[0]
+    except:
+        print("Count not resolve getaddrinfo for {} {}".format(host,port)) 
 
     s = usocket.socket(ai[0], ai[1], ai[2])
     try:
