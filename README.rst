@@ -1,7 +1,10 @@
-# micropython-youtube-api
+MicroPython Youtube API
+=======================
+
 A MicroPython based Youtube API wrapper library and example code that allows you to connect to the Google Apps API backend to obtain channel stats for aa YouTube channel.
 
-## Setting up the config.json
+Setting up the config.json
+--------------------------
 
 The config.json file contains entried you will need to fill in for the following items:
 * ssid - Your Wifi network SSID
@@ -10,7 +13,8 @@ The config.json file contains entried you will need to fill in for the following
 * channelid - Your YouTube Channel ID
 
 
-## Installing
+Installing
+----------
 
 Download the repositry and copy the following files to your ESP8266 or ESP32 Development board running the latest mainline  MicroPython firmware
 
@@ -19,7 +23,8 @@ Download the repositry and copy the following files to your ESP8266 or ESP32 Dev
 * urequests.py
 * Optional: grab_stats.py from examples folder
 
-## Using the API
+Using the API
+----------
 
 Check the grab_stats.py example script for a full implementation of using the library.
 
@@ -63,7 +68,8 @@ Take note that the creation of the YoutubeAPI() instance is done using the **wit
             time.sleep( update_interval )
 ..
 
-## Getting a Google Apps API key (Required!)
+Getting a Google Apps API key (Required!)
+-----------------------------------------
 
 * Create an application [here](https://console.developers.google.com)
 * On the API Manager section, go to "Credentials" and create a new API key
