@@ -89,8 +89,9 @@ If you find this project useful or want to see more open source projects like it
 .. image:: http://3sprockets.com.au/um/PatreonSmall.jpg
     :width: 100
     :alt: Patreon
+    :target: https://www.patreon.com/unexpectedmaker
     
-(https://www.patreon.com/unexpectedmaker)
+https://www.patreon.com/unexpectedmaker
 
 Unexpected Maker
 ===================
