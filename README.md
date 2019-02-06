@@ -26,6 +26,7 @@ Check the grab_stats.py example script for a full implementation of using the li
 Take note that the creation of the YoutubeAPI() instance is done using the **with** statement to create a context around the definition, so cleanup of the WiFi connection can happen when the data variable (class instance) is out of scope. 
 
 .. code-block:: python
+
     from micropython_youtube_api import YoutubeAPI
     import network, json, time
 
