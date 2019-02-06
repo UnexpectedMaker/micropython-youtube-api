@@ -25,6 +25,42 @@ Check the grab_stats.py example script for a full implementation of using the li
 
 Take note that the creation of the YoutubeAPI() instance is done using the **with** statement to create a context around the definition, so cleanup of the WiFi connection can happen when the data variable (class instance) is out of scope. 
 
+.. code-block:: python
+    from micropython_youtube_api import YoutubeAPI
+    import network, json, time
+
+    # Read config
+    with open('config.json') as f:
+        config = json.load(f)
+
+    # Create WiFi connection and turn it on
+    wlan = network.WLAN(network.STA_IF)
+    wlan.active(True)
+
+    # Connect to WiFi router
+    print ("Contacting to WiFi: {}".format( config['ssid'] ) )
+    wlan.connect( config['ssid'], config['ssid_password'])
+
+    # Wait until wifi is connected
+    while not wlan.isconnected:
+        pass
+
+    # Create an instance of the YoutubeApi
+    with YoutubeAPI( wlan, config ) as data:
+
+        # Read the data every X seconds
+        update_interval = 10
+
+        while True:
+            print ("Subs {}".format( data.subs ) )
+            print ("Views {}".format( data.views ) )
+            print ("Videos {}".format( data.videos ) )
+            print ("Comments {}".format( data.comments ) )
+
+            # Sleep for a bit... until the next call
+            print ("Sleeping for {} secs".format( update_interval ) )
+            time.sleep( update_interval )
+..
 
 ## Getting a Google Apps API key (Required!)
 
