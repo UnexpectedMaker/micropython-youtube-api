@@ -77,3 +77,27 @@ Getting a Google Apps API key (Required!)
 * Make sure the following URL works for you in your browser (Change the key at the end!):
 https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCu7_D0o48KbfhpEohoP7YSQ&key=PutYourNewlyGeneratedKeyHere
 
+Enjoy!
+
+Back me on Patreon?
+===================
+
+I love making and designing projects but sharing open source projects takes a lot of thought and time. I do it because I think it’s important to share knowledge and give back to the community like many have done before me.
+
+If you find this project useful or want to see more open source projects like it, please consider backing me on Patreon to say thanks!
+
+[![patreon](http://3sprockets.com.au/um/PatreonSmall.jpg)](https://www.patreon.com/unexpectedmaker)
+
+Unexpected Maker
+===================
+http://youtube.com/c/unexpectedmaker
+
+http://twitter.com/unexpectedmaker
+
+https://www.facebook.com/unexpectedmaker/
+
+https://www.instagram.com/unexpectedmaker/
+
+https://www.tindie.com/stores/seonr/
+
+
