@@ -55,7 +55,9 @@ class YoutubeAPI:
             YoutubeAPI.conn = conn
 
             # Create the command string to send to GoogleAPI
-            YoutubeAPI.command = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id={}&key={}".format( YoutubeAPI.config['channelid'], YoutubeAPI.config['appid'] )
+            YoutubeAPI.command = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id={}&key={}".format( YoutubeAPI.config['channelid'], YoutubeAPI.config['appkeyid'] )
+
+            print ( YoutubeAPI.command )
 
         else:
             print("You don't need more than one instance...")

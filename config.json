@@ -1,7 +1,7 @@
 {
     "ssid": "TestNetwork",
     "ssid_password": "TestNetworkPassword",
-    "appid": "lalalalalalalala",
+    "appkeyid": "lalalalalalalala",
     "channelid": "lololololololo",
     "query_interval_sec": 60
 }
