@@ -6,7 +6,7 @@ with open('config.json') as f:
     config = json.load(f)
 
 # Check config.json has updated credentials
-if not config['ssid'] == 'Enter_Wifi_SSID':
+if config['ssid'] == 'Enter_Wifi_SSID':
     assert False, ("config.json has not been updated with your unique keys and data")
 
 # Create WiFi connection and turn it on
@@ -25,14 +25,19 @@ while not wlan.isconnected:
 with YoutubeAPI( wlan, config ) as data:
 
     # Read the data every X seconds
-    update_interval = 10
+    update_interval = 5
+    update_stats_time = time.time() - 10
 
     while True:
-        print ("Subs {}".format( data.subs ) )
-        print ("Views {}".format( data.views ) )
-        print ("Videos {}".format( data.videos ) )
-        print ("Comments {}".format( data.comments ) )
 
-        # Sleep for a bit... until the next call
-        print ("Sleeping for {} secs".format( update_interval ) )
-        time.sleep( update_interval )
+        if update_stats_time < time.time():
+            update_stats_time = time.time() + update_interval
+
+            print ("Subs {}".format( data.subs ) )
+            print ("Views {}".format( data.views ) )
+            print ("Videos {}".format( data.videos ) )
+            print ("Comments {}".format( data.comments ) )
+
+        # # Sleep for a bit... until the next call
+        # print ("Sleeping for {} secs".format( update_interval ) )
+        # time.sleep( update_interval )
