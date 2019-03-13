@@ -15,13 +15,13 @@ The config.json file contains entried you will need to fill in for the following
 
 .. code-block:: json
 
-{
-    "ssid": "Enter_Wifi_SSID",
-    "ssid_password": "Enter_Wifi_Password",
-    "appkeyid": "Enter_GooleApps_API_Key",
-    "channelid": "Enter_YT_Channel_ID",
-    "query_interval_sec": 60
-}
+    {
+        "ssid": "Enter_Wifi_SSID",
+        "ssid_password": "Enter_Wifi_Password",
+        "appkeyid": "Enter_GooleApps_API_Key",
+        "channelid": "Enter_YT_Channel_ID",
+        "query_interval_sec": 60
+    }
 ..
 
 
