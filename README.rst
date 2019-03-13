@@ -45,39 +45,44 @@ Take note that the creation of the YoutubeAPI() instance is done using the **wit
 .. code-block:: python
 
     from micropython_youtube_api import YoutubeAPI
-    import network, json, time
+import network, json, time
 
-    # Read config
-    with open('config.json') as f:
-        config = json.load(f)
+# Read config
+with open('config.json') as f:
+    config = json.load(f)
 
-    # Create WiFi connection and turn it on
-    wlan = network.WLAN(network.STA_IF)
-    wlan.active(True)
+# Check config.json has updated credentials
+if config['ssid'] == 'Enter_Wifi_SSID':
+    assert False, ("config.json has not been updated with your unique keys and data")
 
-    # Connect to WiFi router
-    print ("Contacting to WiFi: {}".format( config['ssid'] ) )
-    wlan.connect( config['ssid'], config['ssid_password'])
+# Create WiFi connection and turn it on
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
 
-    # Wait until wifi is connected
-    while not wlan.isconnected:
-        pass
+# Connect to WiFi router
+print ("Connecting to WiFi: {}".format( config['ssid'] ) )
+wlan.connect( config['ssid'], config['ssid_password'])
 
-    # Create an instance of the YoutubeApi
-    with YoutubeAPI( wlan, config ) as data:
+# Wait until wifi is connected
+while not wlan.isconnected:
+    pass
 
-        # Read the data every X seconds
-        update_interval = 10
+# Create an instance of the YoutubeApi
+with YoutubeAPI( config["channelid"], config["appkeyid"], config["query_interval_sec"] ) as data:
 
-        while True:
+    # Read the data every X seconds
+    update_interval = 5
+    update_stats_time = time.time() - 10
+
+    while True:
+
+        if update_stats_time < time.time():
+            update_stats_time = time.time() + update_interval
+
             print ("Subs {}".format( data.subs ) )
             print ("Views {}".format( data.views ) )
             print ("Videos {}".format( data.videos ) )
             print ("Comments {}".format( data.comments ) )
-
-            # Sleep for a bit... until the next call
-            print ("Sleeping for {} secs".format( update_interval ) )
-            time.sleep( update_interval )
 ..
 
 Getting a Google Apps API key (Required!)

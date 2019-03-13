@@ -23,9 +23,7 @@
 """
 `micropython_youtube_api` - YouTube API 
 ====================================================
-
 See examples folder for how to use
-
 * Author(s): Seon Rozenblum
 """
 
@@ -33,100 +31,83 @@ __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/unexpectedmaker/micropython-youtube-api"
 
 import urequests as ureq
-import network, json, time
+import json, time
 
 class YoutubeAPI:
 
-    coonnections = 0
-    update_stats_time = time.time() - 10
+    def __init__(self, channel_id, app_key_id, query_interval_sec=60):
+        if not isinstance(channel_id, str):
+            raise TypeError("'channel_id' must be provided")
+        self.channel_id = channel_id
+        if not isinstance(app_key_id, str):
+            raise TypeError("'app_key_id' must be provided")
+        self.app_key_id = app_key_id
+        if not isinstance(query_interval_sec, int):
+            raise TypeError("'query_interval_sec' must be an int")
+        self.query_interval_sec = query_interval_sec
+        self._update_stats_time = time.time() - 10
 
-    # cached stat data
-    cached_subs = 0
-    cached_views = 0
-    cached_comments = 0
-    cached_videos = 0
+        # cached stat data
+        self._subs = 0
+        self._views = 0
+        self._comments = 0
+        self._videos = 0
 
-    def __init__(self, conn, conf ):
-
-        if YoutubeAPI.coonnections == 0:
-            # set connections to 1 so we can have any more instances
-            YoutubeAPI.coonnections == 1
-            YoutubeAPI.config = conf
-            YoutubeAPI.conn = conn
-
-            # Create the command string to send to GoogleAPI
-            YoutubeAPI.command = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id={}&key={}".format( YoutubeAPI.config['channelid'], YoutubeAPI.config['appkeyid'] )
-
-            print ( YoutubeAPI.command )
-
-        else:
-            print("You don't need more than one instance...")
-
-    # Enter and Exit methods for context manager to be able to shut down the Wifi when finished
     def __enter__(self):
         return self
 
     def __exit__(self, *args):
-        self.shutdown()
-
-    # Shutdown wifi if exiting class instance
-    def shutdown(self):
-        if YoutubeAPI.conn.isconnected():
-            print( 'Shutting down WiFi..' )
-            YoutubeAPI.conn.active(False)
+        pass
 
     # Update the stats is the correct time interval has passed
-    def update_stats(self):
-        if YoutubeAPI.update_stats_time < time.time():
-            YoutubeAPI.grab_stats()
-            YoutubeAPI.update_stats_time = time.time() + YoutubeAPI.config['query_interval_sec']
+    def _update_stats(self):
+        if self._update_stats_time < time.time():
+            self._grab_stats()
+            self._update_stats_time = time.time() + self.query_interval_sec
 
-    @classmethod
-    def grab_stats(cls):
+    def _grab_stats(self):
+        # Create the API query to send to GoogleAPI
+        urlbase = "https://www.googleapis.com/youtube/v3/channels"
+        youtube_url = "{}?part=statistics&id={}&key={}".format(urlbase, self.channel_id, self.app_key_id )
 
-        if YoutubeAPI.conn.isconnected:
+        #print ("Contacting GoogleAPI... " )
 
-            print ("Contacting GoogleAPI... " )
-
-            # request the data from Google
-            req = ureq.get( YoutubeAPI.command )
-            if req.status_code == 200:
-                cls.stats = [{
+        # request the data from Google
+        req = ureq.get(youtube_url)
+        if req.status_code == 200:
+            stats = [{
                     'subs': stat['statistics']['subscriberCount'], 
                     'views': stat['statistics']['viewCount'],
                     'videos': stat['statistics']['videoCount'],
                     'comments': stat['statistics']['commentCount']
                     } for stat in req.json()['items']]
                 
-                # for stat in YoutubeApi.stats
-                cls.cached_subs = cls.stats[0]['subs']
-                cls.cached_views = cls.stats[0]['views']
-                cls.cached_videos = cls.stats[0]['videos']
-                cls.comments = cls.stats[0]['comments']
-
-            else:
-                print( "ERROR: status_code: " + str(req.status_code) )
+            # for stat in YoutubeApi.stats
+            self._subs = stats[0]['subs']
+            self._views = stats[0]['views']
+            self._videos = stats[0]['videos']
+            self._comments = stats[0]['comments']         
         else:
-            print( "ERROR: No network connection!")
-
+            print( "ERROR: status_code: " + str(req.status_code) )
+        req.close()
+    
     # Accessorss for each of the stats returned by the API
     @property
     def subs(self):
-        self.update_stats()
-        return YoutubeAPI.cached_subs
+        self._update_stats()
+        return self._subs
 
     @property
     def views(self):
-        self.update_stats()
-        return YoutubeAPI.cached_views
+        self._update_stats()
+        return self._views
 
     @property
     def videos(self):
-        self.update_stats()
-        return YoutubeAPI.cached_videos
+        self._update_stats()
+        return self._videos
 
     @property
     def comments(self):
-        self.update_stats()
-        return YoutubeAPI.cached_comments
-
+        self._update_stats()
+        return self._comments

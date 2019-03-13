@@ -14,7 +14,7 @@ wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 
 # Connect to WiFi router
-print ("Contacting to WiFi: {}".format( config['ssid'] ) )
+print ("Connecting to WiFi: {}".format( config['ssid'] ) )
 wlan.connect( config['ssid'], config['ssid_password'])
 
 # Wait until wifi is connected
@@ -22,7 +22,7 @@ while not wlan.isconnected:
     pass
 
 # Create an instance of the YoutubeApi
-with YoutubeAPI( wlan, config ) as data:
+with YoutubeAPI( config["channelid"], config["appkeyid"], config["query_interval_sec"] ) as data:
 
     # Read the data every X seconds
     update_interval = 5
@@ -37,7 +37,3 @@ with YoutubeAPI( wlan, config ) as data:
             print ("Views {}".format( data.views ) )
             print ("Videos {}".format( data.videos ) )
             print ("Comments {}".format( data.comments ) )
-
-        # # Sleep for a bit... until the next call
-        # print ("Sleeping for {} secs".format( update_interval ) )
-        # time.sleep( update_interval )
